@@ -89,80 +89,18 @@ func main() {
 
 	// Sort records
 	sort.Sort(ByFrequency(records))
-	log.Debugf("%v", records[0])
-	log.Debugf("%v", records[len(records)-1])
-	log.Debugf("total records %d", len(records))
-	//if len(records) < 4096 {
-	//	log.Panic("not enough records")
-	//}
-	//	mostFrequentLemmes := records[len(records)-4096:]
-	mostFrequentFile, err := os.Create("assets/words.txt")
+	log.Infof("total records %d", len(records))
+
+	sortedLemmes, err := os.Create("assets/words.txt")
 	if err != nil {
 		log.Panic(err)
 	}
-	defer mostFrequentFile.Close()
+	defer sortedLemmes.Close()
 
 	for _, record := range records {
-		_, err := mostFrequentFile.Write([]byte(record.Lemme + "\n"))
+		_, err := sortedLemmes.Write([]byte(record.Lemme + "\n"))
 		if err != nil {
 			log.Panic(err)
 		}
 	}
-	/*
-
-
-
-
-		jsondata, err := json.Marshal(records) // convert to JSON
-
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// sanity check
-		// NOTE : You can stream the JSON data to http service as well instead of saving to file
-		fmt.Println(string(jsondata))
-
-		// now write to JSON file
-
-		jsonFile, err := os.Create("./data.json")
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		var record Employee
-		var records []Employee
-
-		for _, each := range csvData {
-			record.Name = each[0]
-			record.Age, _ = strconv.Atoi(each[1]) // need to cast integer to string
-			record.Job = each[2]
-			records = append(records, record)
-		}
-
-		jsondata, err := json.Marshal(records) // convert to JSON
-
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// sanity check
-		// NOTE : You can stream the JSON data to http service as well instead of saving to file
-		fmt.Println(string(jsondata))
-
-		// now write to JSON file
-
-		jsonFile, err := os.Create("./data.json")
-
-		if err != nil {
-			fmt.Println(err)
-		}
-		defer jsonFile.Close()
-
-		jsonFile.Write(jsondata)
-		jsonFile.Close()
-	*/
 }

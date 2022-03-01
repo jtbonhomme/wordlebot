@@ -6,7 +6,7 @@ This project propose a Wordle solver (french version)
 This project is a golang version of [David Louapre's article]https://scienceetonnante.com/2022/02/13/comment-craquer-le-jeu-wordle-sutom/().
 
 It uses a [french lexical(http://www.lexique.org/) database] (140.000 words with frequency in movies or books).
-It will select only the 4096 most frequent 5 letters words as a playground (`cmd/db`).
+It will select only the 4096 most frequent 5 letters words as a playground (`cmd/extract`).
 
 Then it will compute the best first guess word (`cmd/first`)
 And eventually for each game pattern, will provide the best new guess (`cmd/guess`)
@@ -22,7 +22,7 @@ curl -O http://www.lexique.org/databases/Lexique383/Lexique383.tsv
 
 2. Parse tsv
 ```
-go run cmd/db/main.go -d -l assets/Lexique383.tsv
+go run cmd/extract/main.go -d -l assets/Lexique383.tsv
 ```
 
 3. 
