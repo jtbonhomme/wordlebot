@@ -130,3 +130,12 @@ func (g *Guess) Filter(word string, result []int) {
 func (g *Guess) Entropy(s string, result []int) float64 {
 	return 1.0
 }
+
+func (g *Guess) ToString() string {
+	var s string
+	for _, word := range g.words {
+		s += word
+		s += " "
+	}
+	return s
+}

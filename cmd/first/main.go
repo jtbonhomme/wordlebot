@@ -34,9 +34,7 @@ func main() {
 	g := results.New(words)
 	g.Filter("abcde", []int{0, 0, 1, 0, 2})
 
-	log.Debugf("%f", g.Entropy("tarie", []int{0, 0, 1, 0, 2}))
+	log.Debugf("g: %s", g.ToString())
+	log.Debugf("entropy: %f", g.Entropy("tarie", []int{0, 0, 1, 0, 2}))
 
-	for _, word := range words {
-		log.Debugf("%s", word)
-	}
 }
