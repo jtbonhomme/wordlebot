@@ -5,15 +5,25 @@ import (
 	"flag"
 	"os"
 	"regexp"
+	"sort"
 	"strconv"
 
 	log "github.com/sirupsen/logrus"
 )
 
+// Word is a struct that records all french lemmes and their frequancy in movies
 type Word struct {
 	Lemme     string
 	Frequency float64
 }
+
+// ByFrequency implements sort.Interface for []Word based on
+// the Frequency field.
+type ByFrequency []Word
+
+func (a ByFrequency) Len() int           { return len(a) }
+func (a ByFrequency) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByFrequency) Less(i, j int) bool { return a[i].Frequency < a[j].Frequency }
 
 func main() {
 	var validLemme = regexp.MustCompile(`^[a-z]{5}$`)
@@ -45,35 +55,59 @@ func main() {
 	check := make(map[string]int)
 
 	log.Debugln("lemme freq")
+	var l int
 	for i, each := range tsvData {
+		lemme := each[0]
 		// remove header line
 		if i == 0 {
 			continue
 		}
 		// remove invalid lemmes
-		if !validLemme.MatchString(each[2]) {
+		if !validLemme.MatchString(lemme) {
 			continue
 		}
 		// remove duplicates
-		_, ok := check[each[2]]
+		_, ok := check[lemme]
 		if ok {
 			continue
 		}
 
-		check[each[2]] = 1
-		log.Debugf("%s %s", each[2], each[7])
+		check[lemme] = 1
+		log.Debugf("%d %s %s", l, lemme, each[7])
+		l++
 		freq, err := strconv.ParseFloat(each[7], 64)
 		if err != nil {
 			log.Panic(err)
 		}
 
 		record := Word{
-			Lemme:     each[2],
+			Lemme:     lemme,
 			Frequency: freq,
 		}
 		records = append(records, record)
 	}
 
+	// Sort records
+	sort.Sort(ByFrequency(records))
+	log.Debugf("%v", records[0])
+	log.Debugf("%v", records[len(records)-1])
+	log.Debugf("total records %d", len(records))
+	//if len(records) < 4096 {
+	//	log.Panic("not enough records")
+	//}
+	//	mostFrequentLemmes := records[len(records)-4096:]
+	mostFrequentFile, err := os.Create("assets/words.txt")
+	if err != nil {
+		log.Panic(err)
+	}
+	defer mostFrequentFile.Close()
+
+	for _, record := range records {
+		_, err := mostFrequentFile.Write([]byte(record.Lemme + "\n"))
+		if err != nil {
+			log.Panic(err)
+		}
+	}
 	/*
 
 
