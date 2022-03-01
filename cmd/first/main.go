@@ -5,6 +5,7 @@ import (
 	"flag"
 	"os"
 
+	"github.com/jtbonhomme/wordlebot/internal/results"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -29,6 +30,12 @@ func main() {
 	for scanner.Scan() {
 		words = append(words, scanner.Text())
 	}
+
+	g := results.New(words)
+	g.Filter("abcde", []int{0, 0, 1, 0, 2})
+
+	log.Debugf("%f", g.Entropy("tarie", []int{0, 0, 1, 0, 2}))
+
 	for _, word := range words {
 		log.Debugf("%s", word)
 	}
