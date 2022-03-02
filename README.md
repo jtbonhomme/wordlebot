@@ -36,13 +36,13 @@ go run cmd/chart/main.go -d -l assets/taris.stat
 open bar.html
 ```
 
-![](stat.png | width=100px)
+<img src="stat.png" width="100"">
 
-5. Start a game
+1. Start a game
 
 Start a game on your browser (https://wordle.louan.me/)
 
-![](game-start.png | width=100px)
+<img src="game-start.png" width="100"">
 
 ```
 go run cmd/next/main.go -d -l assets/words.txt
@@ -50,11 +50,11 @@ go run cmd/next/main.go -d -l assets/words.txt
 
 Then use the words suggested by `wordlebot`
 
-![](cli.png | width=100px)
+<img src="cli.png" width="100"">
 
 Et voila !
 
-![](game-win.png | width=100px)
+<img src="game-win.png" width="100"">
 
 ## References
 
