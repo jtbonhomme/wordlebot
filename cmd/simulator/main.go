@@ -8,7 +8,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/jtbonhomme/wordlebot/internal/results"
-	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -18,6 +17,7 @@ const (
 )
 
 func main() {
+	var progress int
 	var max = flag.String("m", "", "max words to test")
 	var local = flag.String("l", "assets/words.txt", "use local words list")
 	var debug = flag.Bool("d", false, "display debug information")
@@ -44,6 +44,7 @@ func main() {
 	}
 	wordsToGuess := words
 	maxWords := len(words)
+	log.Infof("there are %d possible words", len(words))
 
 	if *max != "" {
 		m, err := strconv.Atoi(*max)
@@ -56,7 +57,6 @@ func main() {
 		}
 	}
 	log.Infof("will process %d words", maxWords)
-	bar := progressbar.Default(int64(maxWords))
 
 	// start a new game for each word and count attempts
 	for _, word := range wordsToGuess {
@@ -64,9 +64,7 @@ func main() {
 		var attempts int
 		var result string
 		var err error
-		if !*debug {
-			_ = bar.Add(1)
-		}
+		progress++
 
 		log.Infof("Try to guess word %s", word)
 		lastWord := "taris"
@@ -91,6 +89,9 @@ func main() {
 			if err != nil {
 				log.Panic(err)
 			}
+			if nextWord == "" {
+				break
+			}
 			result, err = results.Try(word, nextWord)
 			if err != nil {
 				log.Panic(err)
@@ -102,10 +103,10 @@ func main() {
 			lastWord = nextWord
 		}
 		if win {
-			log.Infof("%s ✅ Found word %s in %d attempts", green("SUCCESS"), word, attempts)
+			log.Infof("%s ✅ Found word %s in %d attempts - progress : %0.f %%", green("SUCCESS"), word, attempts, float64(progress)*100/float64(maxWords))
 			successes = append(successes, attempts)
 		} else {
-			log.Infof("%s ❌ Couldn't find word %s in %d attempts or less", red("FAILURE"), word, maxAttempts)
+			log.Infof("%s ❌ Couldn't find word %s in %d attempts or less - progress : %0.f %%", red("FAILURE"), word, maxAttempts, float64(progress)*100/float64(maxWords))
 		}
 	}
 	var averageAttempts float64

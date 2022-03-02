@@ -32,10 +32,15 @@ func (g *Guess) NextWord(word, res string) (string, float64, error) {
 
 	g.Filter(word, result)
 	log.Debugf("\t%d filtered words are: %s", len(g.filteredWords), g.FilteredToString())
-	log.Debugf("\t%d discarded words are: %s", len(g.discardedWords), g.DiscardedToString())
+	//log.Debugf("\t%d discarded words are: %s", len(g.discardedWords), g.DiscardedToString())
+	g.Commit()
+
 	var maxEntropy float64
 	var bestWord string
-	for _, w := range g.filteredWords {
+	if len(g.words) == 0 {
+		return "", 0.0, nil
+	}
+	for _, w := range g.words {
 		e, err := g.Entropy(w)
 		if err != nil {
 			log.Panic(err)
@@ -45,5 +50,9 @@ func (g *Guess) NextWord(word, res string) (string, float64, error) {
 			bestWord = w
 		}
 	}
+	if len(g.words) > 0 && bestWord == "" && maxEntropy == 0 {
+		return g.words[0], 0.0, nil
+	}
+
 	return bestWord, maxEntropy, nil
 }

@@ -40,6 +40,13 @@ func (g *Guess) FilteredToString() string {
 	return s
 }
 
+// Commit persists filtered word list as main word list
+func (g *Guess) Commit() {
+	g.words = g.filteredWords
+	g.filteredWords = []string{}
+	g.discardedWords = []string{}
+}
+
 // DiscardedToString return a string with the last discarded words
 func (g *Guess) DiscardedToString() string {
 	var s string

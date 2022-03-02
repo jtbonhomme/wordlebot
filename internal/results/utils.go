@@ -30,7 +30,7 @@ func (g *Guess) RemoveLetter(c rune) {
 		}
 	}
 	g.filteredWords = filteredWords
-	g.discardedWords = discardedWords
+	g.discardedWords = append(g.discardedWords, discardedWords...)
 }
 
 // RemoveNoLetter filters all words with no letter c in any position
@@ -45,7 +45,7 @@ func (g *Guess) RemoveNoLetter(c rune) {
 		}
 	}
 	g.filteredWords = filteredWords
-	g.discardedWords = discardedWords
+	g.discardedWords = append(g.discardedWords, discardedWords...)
 }
 
 // RemoveLetterInPos filters all words with the letter c in position i
@@ -60,7 +60,7 @@ func (g *Guess) RemoveLetterInPos(c rune, i int) {
 		}
 	}
 	g.filteredWords = filteredWords
-	g.discardedWords = discardedWords
+	g.discardedWords = append(g.discardedWords, discardedWords...)
 }
 
 // RemoveNoLetterInPos filters all words with no letter c in position i
@@ -75,7 +75,7 @@ func (g *Guess) RemoveNoLetterInPos(c rune, i int) {
 		}
 	}
 	g.filteredWords = filteredWords
-	g.discardedWords = discardedWords
+	g.discardedWords = append(g.discardedWords, discardedWords...)
 }
 
 // RemoveWord definitively removes a word from words list
@@ -87,4 +87,5 @@ func (g *Guess) RemoveWord(w string) {
 		}
 	}
 	g.words = filteredWords
+	g.filteredWords = filteredWords
 }
