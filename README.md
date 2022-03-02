@@ -37,12 +37,15 @@ open bar.html
 ```
 
 `event` Entropy processing for each possible results:
+
 <img src="stat1.png" width="400">
 
 `ouche` Entropy processing for each possible results:
+
 <img src="stat2.png" width="400">
 
 `taris` Entropy processing for each possible results:
+
 <img src="stat3.png" width="400">
 
 1. Start a game
