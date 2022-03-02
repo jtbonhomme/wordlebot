@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math"
 	"os"
-
-	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -14,11 +12,13 @@ const (
 	GoodPlace int = 2
 )
 
+// Gues is a structure that support entropy computation
 type Guess struct {
 	words         []string
 	filteredWords []string
 }
 
+// New create a new Guess object from a given word list
 func New(words []string) *Guess {
 	return &Guess{
 		words:         words,
@@ -62,6 +62,7 @@ func hasLetterInPos(word string, c rune, p int) bool {
 	return false
 }
 
+// RemoveLetter filters all words with the letter c in any position
 func (g *Guess) RemoveLetter(c rune) {
 	var filteredWords []string
 	for _, word := range g.filteredWords {
@@ -72,6 +73,7 @@ func (g *Guess) RemoveLetter(c rune) {
 	g.filteredWords = filteredWords
 }
 
+// RemoveNoLetter filters all words with no letter c in any position
 func (g *Guess) RemoveNoLetter(c rune) {
 	var filteredWords []string
 	for _, word := range g.filteredWords {
@@ -82,6 +84,7 @@ func (g *Guess) RemoveNoLetter(c rune) {
 	g.filteredWords = filteredWords
 }
 
+// RemoveLetterInPos filters all words with the letter c in position i
 func (g *Guess) RemoveLetterInPos(c rune, i int) {
 	var filteredWords []string
 	for _, word := range g.filteredWords {
@@ -92,6 +95,7 @@ func (g *Guess) RemoveLetterInPos(c rune, i int) {
 	g.filteredWords = filteredWords
 }
 
+// RemoveNoLetterInPos filters all words with no letter c in position i
 func (g *Guess) RemoveNoLetterInPos(c rune, i int) {
 	var filteredWords []string
 	for _, word := range g.filteredWords {
@@ -125,6 +129,10 @@ func (g *Guess) Filter(word string, result []int) {
 	}
 }
 
+// Entropy compute the averge information quantity that can be retrieve
+// from a word. It will check for every guess possibility and get the
+// information quantity from each guess (3^5) and return the average
+// information quantity.
 func (g *Guess) Entropy(word string) (float64, error) {
 	var entropy []float64
 	var total float64
@@ -156,10 +164,10 @@ func (g *Guess) Entropy(word string) (float64, error) {
 		total += e
 	}
 	meanEntropy := total / float64(len(entropy))
-	log.Debugf("entropy of %s is %f", word, meanEntropy)
 	return meanEntropy, nil
 }
 
+// ToString return a string with all dictionary
 func (g *Guess) ToString() string {
 	var s string
 	for _, word := range g.words {
@@ -169,6 +177,7 @@ func (g *Guess) ToString() string {
 	return s
 }
 
+// FilteredToString return a string with the current filtered dictionary
 func (g *Guess) FilteredToString() string {
 	var s string
 	for _, word := range g.filteredWords {

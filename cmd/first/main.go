@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/jtbonhomme/wordlebot/internal/results"
+	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func main() {
 	var local = flag.String("l", "assets/words.txt", "use local words list")
 	var debug = flag.Bool("d", false, "display debug information")
 	flag.Parse()
-	log.Infoln("start with local words list ", *local)
+	log.Infoln("start with local words list", *local)
 
 	if *debug {
 		log.SetLevel(log.DebugLevel)
@@ -31,22 +32,21 @@ func main() {
 		words = append(words, scanner.Text())
 	}
 
-	g := results.New(words)
+	bar := progressbar.Default(int64(len(words)))
 
-	e1, err := g.Entropy("tarie")
-	if err != nil {
-		log.Panic(err)
+	var maxEntropy float64
+	var bestWord string
+	for _, word := range words {
+		bar.Add(1)
+		g := results.New(words)
+		e, err := g.Entropy(word)
+		if err != nil {
+			log.Panic(err)
+		}
+		if e > maxEntropy {
+			maxEntropy = e
+			bestWord = word
+		}
 	}
-	e2, err := g.Entropy("tarin")
-	if err != nil {
-		log.Panic(err)
-	}
-	e3, err := g.Entropy("round")
-	if err != nil {
-		log.Panic(err)
-	}
-	log.Debugf("tarie entropy: %f", e1)
-	log.Debugf("tarin entropy: %f", e2)
-	log.Debugf("round entropy: %f", e3)
-
+	log.Infof("Best Word to start with is %s with a entropy of %f", bestWord, maxEntropy)
 }

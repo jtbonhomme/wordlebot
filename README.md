@@ -25,7 +25,10 @@ curl -O http://www.lexique.org/databases/Lexique383/Lexique383.tsv
 go run cmd/extract/main.go -d -l assets/Lexique383.tsv
 ```
 
-3. 
+3. Compute the best word to start with
+```
+go run cmd/first/main.go -d -l assets/words.txt
+```
 
 ## References
 
