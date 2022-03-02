@@ -36,9 +36,16 @@ go run cmd/chart/main.go -d -l assets/taris.stat
 open bar.html
 ```
 
-![](stat.png)
+`event` Entropy processing for each possible results:
+<img src="stat1.png" width="400">
 
-5. Start a game
+`ouche` Entropy processing for each possible results:
+<img src="stat2.png" width="400">
+
+`taris` Entropy processing for each possible results:
+<img src="stat3.png" width="400">
+
+1. Start a game
 
 Start a game on your browser (https://wordle.louan.me/)
 
