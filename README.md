@@ -38,6 +38,23 @@ open bar.html
 
 ![](stat.png)
 
+5. Start a game
+
+Start a game on your browser (https://wordle.louan.me/)
+
+![](game-start.png)
+
+```
+go run cmd/next/main.go -d -l assets/words.txt
+```
+
+Then use the words suggested by `wordlebot`
+
+![](cli.png)
+
+Et voila !
+
+![](game-win.png)
 
 ## References
 
