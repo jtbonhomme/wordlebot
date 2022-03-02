@@ -3,7 +3,7 @@ This project propose a Wordle solver (french version)
 
 ## Introduction
 
-This project is a golang version of [David Louapre's article]https://scienceetonnante.com/2022/02/13/comment-craquer-le-jeu-wordle-sutom/().
+This project is a golang version of [David Louapre's article](https://scienceetonnante.com/2022/02/13/comment-craquer-le-jeu-wordle-sutom/).
 
 It uses a [french lexical(http://www.lexique.org/) database] (140.000 words with frequency in movies or books).
 It will select only the 4096 most frequent 5 letters words as a playground (`cmd/extract`).
