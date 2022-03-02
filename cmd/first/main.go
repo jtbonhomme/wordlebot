@@ -32,9 +32,12 @@ func main() {
 	}
 
 	g := results.New(words)
-	g.Filter("abcde", []int{0, 0, 1, 0, 2})
 
-	log.Debugf("g: %s", g.ToString())
-	log.Debugf("entropy: %f", g.Entropy("tarie", []int{0, 0, 1, 0, 2}))
+	e1, _ := g.Entropy("tarie")
+	e2, _ := g.Entropy("tarin")
+	e3, _ := g.Entropy("round")
+	log.Debugf("tarie entropy: %f", e1)
+	log.Debugf("tarin entropy: %f", e2)
+	log.Debugf("round entropy: %f", e3)
 
 }

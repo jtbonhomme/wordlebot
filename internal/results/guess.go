@@ -1,9 +1,9 @@
 package results
 
 import (
+	"fmt"
 	"math"
-
-	log "github.com/sirupsen/logrus"
+	"os"
 )
 
 const (
@@ -13,12 +13,14 @@ const (
 )
 
 type Guess struct {
-	words []string
+	words         []string
+	filteredWords []string
 }
 
 func New(words []string) *Guess {
 	return &Guess{
-		words: words,
+		words:         words,
+		filteredWords: words,
 	}
 }
 
@@ -60,46 +62,42 @@ func hasLetterInPos(word string, c rune, p int) bool {
 
 func (g *Guess) RemoveLetter(c rune) {
 	var filteredWords []string
-	for _, word := range g.words {
+	for _, word := range g.filteredWords {
 		if !hasLetter(word, c) {
-			log.Debugf("keep word %s because it does not have letter %s", word, string(c))
 			filteredWords = append(filteredWords, word)
 		}
 	}
-	g.words = filteredWords
+	g.filteredWords = filteredWords
 }
 
 func (g *Guess) RemoveNoLetter(c rune) {
 	var filteredWords []string
-	for _, word := range g.words {
+	for _, word := range g.filteredWords {
 		if hasLetter(word, c) {
-			log.Debugf("keep word %s because it has letter %s", word, string(c))
 			filteredWords = append(filteredWords, word)
 		}
 	}
-	g.words = filteredWords
+	g.filteredWords = filteredWords
 }
 
 func (g *Guess) RemoveLetterInPos(c rune, i int) {
 	var filteredWords []string
-	for _, word := range g.words {
+	for _, word := range g.filteredWords {
 		if !hasLetterInPos(word, c, i) {
-			log.Debugf("keep word %s because it does not have letter %s in position %d", word, string(c), i)
 			filteredWords = append(filteredWords, word)
 		}
 	}
-	g.words = filteredWords
+	g.filteredWords = filteredWords
 }
 
 func (g *Guess) RemoveNoLetterInPos(c rune, i int) {
 	var filteredWords []string
-	for _, word := range g.words {
+	for _, word := range g.filteredWords {
 		if hasLetterInPos(word, c, i) {
-			log.Debugf("keep word %s because it has letter %s", word, string(c))
 			filteredWords = append(filteredWords, word)
 		}
 	}
-	g.words = filteredWords
+	g.filteredWords = filteredWords
 }
 
 // Filter remove words that don't match the guess.
@@ -108,32 +106,65 @@ func (g *Guess) RemoveNoLetterInPos(c rune, i int) {
 // which do not contain the letter c
 // and do not have a letter e in last position
 func (g *Guess) Filter(word string, result []int) {
+	g.filteredWords = g.words
 	if len(word) != 5 || len(result) != 5 {
 		return
 	}
 	for i, c := range word {
 		switch result[i] {
 		case Nothing:
-			log.Debugf("remove words that contain the letter %s", string(c))
 			g.RemoveLetter(c)
 		case InWord:
-			log.Debugf("remove words that do not contain the letter %s and words that contains the letter %s at the %dth position", string(c), string(c), i+1)
 			g.RemoveNoLetter(c)
 			g.RemoveLetterInPos(c, i)
 		case GoodPlace:
-			log.Debugf("remove words that do not contain the letter %s at the %dth position", string(c), i+1)
 			g.RemoveNoLetterInPos(c, i)
 		}
 	}
 }
 
-func (g *Guess) Entropy(s string, result []int) float64 {
-	return 1.0
+func (g *Guess) Entropy(word string) (float64, error) {
+	var entropy []float64
+	var total float64
+	if word == "" {
+		return 0.0, fmt.Errorf("word can not be empty")
+	}
+
+	filename := "assets/" + word + ".stat"
+	stat, err := os.Create(filename)
+	if err != nil {
+		return 0.0, fmt.Errorf("can not open %s: %w", filename, err)
+	}
+	defer stat.Close()
+
+	for i := 0; i < int(math.Pow(3, 5)); i++ {
+		result := Information(i)
+		g.Filter(word, result)
+		e := float64(len(g.filteredWords)) / float64(len(g.words))
+		entropy = append(entropy, e)
+		_, err := stat.Write([]byte(fmt.Sprintf("%d%d%d%d%d,%f\n", result[0], result[1], result[2], result[3], result[4], e)))
+		if err != nil {
+			return 0.0, fmt.Errorf("can not write into %s: %w", filename, err)
+		}
+	}
+	for _, e := range entropy {
+		total += e
+	}
+	return total / float64(len(entropy)), nil
 }
 
 func (g *Guess) ToString() string {
 	var s string
 	for _, word := range g.words {
+		s += word
+		s += " "
+	}
+	return s
+}
+
+func (g *Guess) FilteredToString() string {
+	var s string
+	for _, word := range g.filteredWords {
 		s += word
 		s += " "
 	}
