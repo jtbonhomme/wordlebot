@@ -58,6 +58,7 @@ func main() {
 	var l int
 	for i, each := range tsvData {
 		lemme := each[0]
+		freqString := each[7]
 		// remove header line
 		if i == 0 {
 			continue
@@ -73,9 +74,9 @@ func main() {
 		}
 
 		check[lemme] = 1
-		log.Debugf("%d %s %s", l, lemme, each[7])
+		log.Debugf("%d %s %s", l, lemme, freqString)
 		l++
-		freq, err := strconv.ParseFloat(each[7], 64)
+		freq, err := strconv.ParseFloat(freqString, 64)
 		if err != nil {
 			log.Panic(err)
 		}

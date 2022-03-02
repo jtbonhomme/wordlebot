@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -150,7 +152,9 @@ func (g *Guess) Entropy(word string) (float64, error) {
 	for _, e := range entropy {
 		total += e
 	}
-	return total / float64(len(entropy)), nil
+	meanEntropy := total / float64(len(entropy))
+	log.Debugf("entropy of %s is %f", word, meanEntropy)
+	return meanEntropy, nil
 }
 
 func (g *Guess) ToString() string {

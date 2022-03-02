@@ -33,9 +33,18 @@ func main() {
 
 	g := results.New(words)
 
-	e1, _ := g.Entropy("tarie")
-	e2, _ := g.Entropy("tarin")
-	e3, _ := g.Entropy("round")
+	e1, err := g.Entropy("tarie")
+	if err != nil {
+		log.Panic(err)
+	}
+	e2, err := g.Entropy("tarin")
+	if err != nil {
+		log.Panic(err)
+	}
+	e3, err := g.Entropy("round")
+	if err != nil {
+		log.Panic(err)
+	}
 	log.Debugf("tarie entropy: %f", e1)
 	log.Debugf("tarin entropy: %f", e2)
 	log.Debugf("round entropy: %f", e3)
