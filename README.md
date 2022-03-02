@@ -30,6 +30,15 @@ go run cmd/extract/main.go -d -l assets/Lexique383.tsv
 go run cmd/first/main.go -d -l assets/words.txt
 ```
 
+4. Visualize a word statistics
+```
+go run cmd/chart/main.go -d -l assets/taris.stat
+open bar.html
+```
+
+![](stat.png)
+
+
 ## References
 
 * http://www.lexique.org/
