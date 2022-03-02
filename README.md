@@ -57,15 +57,45 @@ Et voila !
 
 6. Run the game simulator (optional)
 
+Use `-m 10` option to limit the simulation to 10 words to guess.
+
 ```
-go run cmd/simulator/main.go -d -l assets/words.txt
+go run cmd/simulator/main.go -d -l assets/words.txt -m 10
 INFO[0000] start with local words list assets/words.txt
-DEBU[0028] SUCCESS ✅ Found word gadjo in 4 attempts
-DEBU[0029] SUCCESS ✅ Found word poter in 2 attempts
-DEBU[0034] FAILURE ❌ Couldn't find word calao in less than 6 attempts
-DEBU[0035] SUCCESS ✅ Found word putti in 4 attempts
+DEBU[0024] Try to guess word gadjo                      
+DEBU[0024]      [0] guess: taris result: 02000 
+DEBU[0028]      [1] guess: lagon result: 02110 
+DEBU[0028]      [2] guess: cargo result: 02012 
+DEBU[0028]      [3] guess: gadjo result: 22222 
+DEBU[0028] SUCCESS ✅ Found word gadjo in 4 attempts 
+DEBU[0028] Try to guess word poter                      
+DEBU[0028]      [0] guess: taris result: 10100 
+DEBU[0029]      [1] guess: poter result: 22222 
+DEBU[0029] SUCCESS ✅ Found word poter in 2 attempts 
+DEBU[0029] Try to guess word calao                      
+DEBU[0029]      [0] guess: taris result: 02000 
+DEBU[0034]      [1] guess: lagon result: 12010 
+DEBU[0034]      [2] guess: salto result: 02202 
+DEBU[0034]      [3] guess: gallo result: 02212 
+DEBU[0034]      [4] guess: balto result: 02202 
+DEBU[0034]      [5] guess: calao result: 22222 
+DEBU[0034] SUCCESS ✅ Found word calao in 6 attempts 
+DEBU[0034] Try to guess word putti                      
+DEBU[0034]      [0] guess: taris result: 10010 
+DEBU[0035]      [1] guess: pinot result: 21001 
+DEBU[0035]      [2] guess: parti result: 20022 
+DEBU[0035]      [3] guess: putti result: 22222 
+DEBU[0035] SUCCESS ✅ Found word putti in 4 attempts 
+DEBU[0035] Try to guess word cajun                      
+DEBU[0035]      [0] guess: taris result: 02000 
+DEBU[0040]      [1] guess: lagon result: 02002 
+DEBU[0041]      [2] guess: tarin result: 02002 
+DEBU[0041]      [3] guess: salon result: 02002 
+DEBU[0042]      [4] guess: marin result: 02002 
+DEBU[0042]      [5] guess: galon result: 02002 
+DEBU[0042] FAILURE ❌ Couldn't find word cajun in 6 attempts or less 
 ...
-```
+INFO[0048] wordlebot performance is 4.200000 attempts to guess a word ```
 
 ## References
 

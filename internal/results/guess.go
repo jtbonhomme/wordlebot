@@ -109,6 +109,17 @@ func (g *Guess) RemoveNoLetterInPos(c rune, i int) {
 	g.filteredWords = filteredWords
 }
 
+// RemoveWord definitively removes a word from words list
+func (g *Guess) RemoveWord(w string) {
+	var filteredWords []string
+	for _, word := range g.words {
+		if w != word {
+			filteredWords = append(filteredWords, word)
+		}
+	}
+	g.words = filteredWords
+}
+
 // Filter remove words that don't match the guess.
 // For example, "abcde" + 00102 will remove all words
 // which contains the following letters a, b or d

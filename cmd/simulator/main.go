@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"flag"
 	"os"
+	"strconv"
 
 	"github.com/fatih/color"
 	"github.com/jtbonhomme/wordlebot/internal/results"
+	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -16,6 +18,7 @@ const (
 )
 
 func main() {
+	var max = flag.String("m", "", "max words to test")
 	var local = flag.String("l", "assets/words.txt", "use local words list")
 	var debug = flag.Bool("d", false, "display debug information")
 	flag.Parse()
@@ -39,13 +42,31 @@ func main() {
 	for scanner.Scan() {
 		words = append(words, scanner.Text())
 	}
+	wordsToGuess := words
+	maxWords := len(words)
+
+	if *max != "" {
+		m, err := strconv.Atoi(*max)
+		if err != nil {
+			log.Panic(err)
+		}
+		if m < len(words) {
+			maxWords = m
+			wordsToGuess = words[:m]
+		}
+	}
+	log.Infof("will process %d words", maxWords)
+	bar := progressbar.Default(int64(maxWords))
 
 	// start a new game for each word and count attempts
-	for _, word := range words {
+	for _, word := range wordsToGuess {
 		var win bool
 		var attempts int
 		var result string
 		var err error
+		if !*debug {
+			_ = bar.Add(1)
+		}
 
 		log.Debugf("Try to guess word %s", word)
 		lastWord := "taris"
@@ -62,8 +83,10 @@ func main() {
 		if result == "22222" {
 			win = true
 		}
+
 		// next attempts
 		for ; attempts < maxAttempts && !win; attempts++ {
+			g.RemoveWord(lastWord)
 			nextWord, _, err := g.NextWord(lastWord, result)
 			if err != nil {
 				log.Panic(err)
