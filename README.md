@@ -38,7 +38,7 @@ open bar.html
 
 ![](stat.png)
 
-1. Start a game
+5. Start a game
 
 Start a game on your browser (https://wordle.louan.me/)
 
@@ -54,6 +54,18 @@ Then use the words suggested by `wordlebot`
 Et voila !
 
 <img src="game-win.png" width="500">
+
+6. Run the game simulator (optional)
+
+```
+go run cmd/simulator/main.go -d -l assets/words.txt
+INFO[0000] start with local words list assets/words.txt
+DEBU[0028] SUCCESS ✅ Found word gadjo in 4 attempts
+DEBU[0029] SUCCESS ✅ Found word poter in 2 attempts
+DEBU[0034] FAILURE ❌ Couldn't find word calao in less than 6 attempts
+DEBU[0035] SUCCESS ✅ Found word putti in 4 attempts
+...
+```
 
 ## References
 

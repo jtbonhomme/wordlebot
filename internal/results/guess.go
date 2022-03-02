@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -118,6 +119,7 @@ func (g *Guess) Filter(word string, result []int) {
 	if len(word) != 5 || len(result) != 5 {
 		return
 	}
+	word = strings.ToLower(word)
 	for i, c := range word {
 		switch result[i] {
 		case Nothing:
@@ -141,7 +143,7 @@ func (g *Guess) Entropy(word string) (float64, error) {
 	if word == "" {
 		return 0.0, fmt.Errorf("word can not be empty")
 	}
-
+	word = strings.ToLower(word)
 	filename := "assets/" + word + ".stat"
 	stat, err := os.Create(filename)
 	if err != nil {
@@ -197,6 +199,8 @@ func (g *Guess) NextWord(word, res string) (string, float64, error) {
 		return "", 0.0, fmt.Errorf("word %s has not the right length", word)
 	}
 
+	word = strings.ToLower(word)
+
 	for _, c := range res {
 		i, err := strconv.Atoi(string(c))
 		if err != nil {
@@ -223,4 +227,22 @@ func (g *Guess) NextWord(word, res string) (string, float64, error) {
 		}
 	}
 	return bestWord, maxEntropy, nil
+}
+
+// Try return the result to guess a word against another
+func (g *Guess) Try(word, guess string) (string, error) {
+	var result string
+	if len(word) != 5 || len(guess) != 5 {
+		return "", fmt.Errorf("word %s or guess %s have not the right length", word, guess)
+	}
+	for i, c := range guess {
+		if byte(c) == word[i] {
+			result += "2"
+		} else if strings.Contains(word, string(c)) {
+			result += "1"
+		} else {
+			result += "0"
+		}
+	}
+	return result, nil
 }
