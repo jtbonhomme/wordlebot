@@ -109,5 +109,5 @@ INFO[0033] wordlebot performance is 3.434783 attempts to guess a word
 
 * [ ] Add tests
 * [ ] Speed up programs with concurency (especially simulator)
-* [ ] Display filtered list (debug mode)
+* [ ] Naming
 * [ ] Improve charts
