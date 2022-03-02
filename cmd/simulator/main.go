@@ -68,16 +68,16 @@ func main() {
 			_ = bar.Add(1)
 		}
 
-		log.Debugf("Try to guess word %s", word)
+		log.Infof("Try to guess word %s", word)
 		lastWord := "taris"
 		g := results.New(words)
 
 		// first attempt with "taris"
-		result, err = g.Try(word, lastWord)
+		result, err = results.Try(word, lastWord)
 		if err != nil {
 			log.Panic(err)
 		}
-		log.Debugf("\t[%d] guess: %s result: %s", attempts, green(lastWord), red(result))
+		log.Infof("\t[%d] guess: %s result: %s", attempts, green(lastWord), red(result))
 		attempts++
 		// Did we win with the first attempts?
 		if result == "22222" {
@@ -91,21 +91,21 @@ func main() {
 			if err != nil {
 				log.Panic(err)
 			}
-			result, err = g.Try(word, nextWord)
+			result, err = results.Try(word, nextWord)
 			if err != nil {
 				log.Panic(err)
 			}
-			log.Debugf("\t[%d] guess: %s result: %s", attempts, green(nextWord), red(result))
+			log.Infof("\t[%d] guess: %s result: %s", attempts, green(nextWord), red(result))
 			if result == "22222" {
 				win = true
 			}
 			lastWord = nextWord
 		}
 		if win {
-			log.Debugf("%s ✅ Found word %s in %d attempts", green("SUCCESS"), word, attempts)
+			log.Infof("%s ✅ Found word %s in %d attempts", green("SUCCESS"), word, attempts)
 			successes = append(successes, attempts)
 		} else {
-			log.Debugf("%s ❌ Couldn't find word %s in %d attempts or less", red("FAILURE"), word, maxAttempts)
+			log.Infof("%s ❌ Couldn't find word %s in %d attempts or less", red("FAILURE"), word, maxAttempts)
 		}
 	}
 	var averageAttempts float64

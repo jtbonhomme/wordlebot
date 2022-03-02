@@ -95,7 +95,9 @@ DEBU[0042]      [4] guess: marin result: 02002
 DEBU[0042]      [5] guess: galon result: 02002 
 DEBU[0042] FAILURE ❌ Couldn't find word cajun in 6 attempts or less 
 ...
-INFO[0048] wordlebot performance is 4.200000 attempts to guess a word ```
+INFO[0048] wordlebot performance is 4.200000 attempts to guess a word 
+
+```
 
 ## References
 
@@ -103,3 +105,11 @@ INFO[0048] wordlebot performance is 4.200000 attempts to guess a word ```
 * https://scienceetonnante.com/2022/02/13/comment-craquer-le-jeu-wordle-sutom/
 * https://www.youtube.com/watch?v=iw4_7ioHWF4&t=569s
 * https://www.youtube.com/watch?v=fRed0Xmc2Wg
+
+## To do
+
+* [ ] Add tests
+* [ ] Speed up programs with concurency (especially simulator)
+* [ ] Display filtered list (debug mode)
+* [ ] Try to improve heuristic with a different strategy given the past failed attempts
+* [ ] Improve charts
