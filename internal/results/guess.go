@@ -142,9 +142,12 @@ func (g *Guess) Entropy(word string) (float64, error) {
 	for i := 0; i < int(math.Pow(3, 5)); i++ {
 		result := Information(i)
 		g.Filter(word, result)
-		e := float64(len(g.filteredWords)) / float64(len(g.words))
-		entropy = append(entropy, e)
-		_, err := stat.Write([]byte(fmt.Sprintf("%d%d%d%d%d,%f\n", result[0], result[1], result[2], result[3], result[4], e)))
+		var iqty float64
+		if len(g.filteredWords) != 0 {
+			iqty = -math.Log(float64(len(g.filteredWords))/float64(len(g.words))) / math.Log(3)
+		}
+		entropy = append(entropy, iqty)
+		_, err := stat.Write([]byte(fmt.Sprintf("%d%d%d%d%d,%f\n", result[0], result[1], result[2], result[3], result[4], iqty)))
 		if err != nil {
 			return 0.0, fmt.Errorf("can not write into %s: %w", filename, err)
 		}
