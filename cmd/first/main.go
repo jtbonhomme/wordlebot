@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jtbonhomme/wordlebot/internal/results"
+	"github.com/jtbonhomme/wordlebot/internal/wordle"
 	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 )
@@ -39,7 +39,7 @@ func main() {
 	var bestWord string
 	for _, word := range words {
 		bar.Add(1)
-		g := results.New(words)
+		g := wordle.New(words)
 		e, stats, err := g.Entropy(word)
 		if err != nil {
 			log.Panic(err)
