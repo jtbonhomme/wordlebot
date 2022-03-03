@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/fatih/color"
-	"github.com/jtbonhomme/wordlebot/internal/results"
+	"github.com/jtbonhomme/wordlebot/internal/wordle"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -42,7 +42,7 @@ func main() {
 	for scanner.Scan() {
 		words = append(words, scanner.Text())
 	}
-	wordsToGuess := words
+	wordsToGame := words
 	maxWords := len(words)
 	log.Infof("there are %d possible words", len(words))
 
@@ -53,13 +53,13 @@ func main() {
 		}
 		if m < len(words) {
 			maxWords = m
-			wordsToGuess = words[:m]
+			wordsToGame = words[:m]
 		}
 	}
 	log.Infof("will process %d words", maxWords)
 
 	// start a new game for each word and count attempts
-	for _, word := range wordsToGuess {
+	for _, word := range wordsToGame {
 		var win bool
 		var attempts int
 		var result string
@@ -68,10 +68,10 @@ func main() {
 
 		log.Infof("Try to guess word %s", word)
 		lastWord := "taris"
-		g := results.New(words)
+		g := wordle.New(words)
 
 		// first attempt with "taris"
-		result, err = results.Try(word, lastWord)
+		result, err = wordle.Try(word, lastWord)
 		if err != nil {
 			log.Panic(err)
 		}
@@ -92,7 +92,7 @@ func main() {
 			if nextWord == "" {
 				break
 			}
-			result, err = results.Try(word, nextWord)
+			result, err = wordle.Try(word, nextWord)
 			if err != nil {
 				log.Panic(err)
 			}

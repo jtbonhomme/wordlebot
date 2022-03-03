@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
-	"github.com/jtbonhomme/wordlebot/internal/results"
+	"github.com/jtbonhomme/wordlebot/internal/wordle"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -54,12 +54,12 @@ func main() {
 	// set some global options like Title/Legend/ToolTip or anything else
 	bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
 		Title:    "Entropy repartition for word " + *local,
-		Subtitle: "X axis represents all possible results for this word",
+		Subtitle: "X axis represents the information gained for this word",
 	}))
 
 	var xAxis []string
 	for i := 0; i < int(math.Pow(3, 5)); i++ {
-		result := results.Information(i)
+		result := wordle.IntToPowerOf3(i)
 		xAxis = append(xAxis, fmt.Sprintf("%d%d%d%d%d", result[0], result[1], result[2], result[3], result[4]))
 	}
 	// Put data into instance
