@@ -2,6 +2,7 @@ package wordle
 
 import (
 	"fmt"
+	"strings"
 )
 
 // CountLetter return the occurrence of a letter in a word
@@ -27,12 +28,21 @@ func CountLetter(l rune, word string) int {
 // - 2 : this letter is the same in both word at the same place
 // Ex.:
 // Try("abcde", "afdge") will return "20102"
-func Try(word, guess string) (string, error) {
+func Try(word, guess string, upperCase bool) (string, error) {
 	var result string
 	letterMap := make(map[string]int)
 	if len(word) != 5 || len(guess) != 5 {
 		return "", fmt.Errorf("word %s or guess %s have not the expected length (5)", word, guess)
 	}
+
+	if upperCase {
+		word = strings.ToUpper(word)
+		guess = strings.ToUpper(guess)
+	} else {
+		word = strings.ToLower(word)
+		guess = strings.ToLower(guess)
+	}
+
 	for i, c := range guess {
 		if byte(c) == word[i] {
 			result += GoodPlaceStr

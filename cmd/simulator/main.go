@@ -14,10 +14,12 @@ import (
 const (
 	maxAttempts int    = 6
 	firstWord   string = "taris"
+	resultOK    string = "22222"
 )
 
 func main() {
 	var progress int
+	var upperCase = flag.Bool("c", true, "words list is in upper case (default)")
 	var max = flag.String("m", "", "max words to test")
 	var local = flag.String("l", "assets/words.txt", "use local words list")
 	var debug = flag.Bool("d", false, "display debug information")
@@ -67,37 +69,37 @@ func main() {
 		progress++
 
 		log.Infof("Try to guess word %s", word)
-		lastWord := "taris"
+		lastWord := firstWord
 		g := wordle.New(words)
 
-		// first attempt with "taris"
-		result, err = wordle.Try(word, lastWord)
+		// first attempt with firstWord ("taris")
+		result, err = wordle.Try(word, lastWord, *upperCase)
 		if err != nil {
 			log.Panic(err)
 		}
 		log.Infof("\t[%d] guess: %s result: %s", attempts, green(lastWord), red(result))
 		attempts++
 		// Did we win with the first attempts?
-		if result == "22222" {
+		if result == resultOK {
 			win = true
 		}
 
 		// next attempts
 		for ; attempts < maxAttempts && !win; attempts++ {
 			g.RemoveWord(lastWord)
-			nextWord, _, err := g.NextWord(lastWord, result)
+			nextWord, _, err := g.NextWord(lastWord, result, *upperCase)
 			if err != nil {
 				log.Panic(err)
 			}
 			if nextWord == "" {
 				break
 			}
-			result, err = wordle.Try(word, nextWord)
+			result, err = wordle.Try(word, nextWord, *upperCase)
 			if err != nil {
 				log.Panic(err)
 			}
 			log.Infof("\t[%d] guess: %s result: %s", attempts, green(nextWord), red(result))
-			if result == "22222" {
+			if result == resultOK {
 				win = true
 			}
 			lastWord = nextWord

@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -99,7 +100,7 @@ func main() {
 	defer sortedLemmes.Close()
 
 	for _, record := range records {
-		_, err := sortedLemmes.Write([]byte(record.Lemme + "\n"))
+		_, err := sortedLemmes.Write([]byte(strings.ToUpper(record.Lemme) + "\n"))
 		if err != nil {
 			log.Panic(err)
 		}

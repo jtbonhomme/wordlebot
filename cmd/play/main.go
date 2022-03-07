@@ -12,7 +12,8 @@ import (
 )
 
 func main() {
-	var local = flag.String("l", "assets/words.txt", "use local words list")
+	var upperCase = flag.Bool("c", true, "words list is in upper case (default)")
+	var local = flag.String("l", "assets/long-words.txt", "use local words list")
 	var debug = flag.Bool("d", false, "display debug information")
 	flag.Parse()
 	log.Infoln("start with local words list", *local)
@@ -50,7 +51,7 @@ func main() {
 			log.Panic(err)
 		}
 		result = strings.TrimSuffix(result, "\n")
-		next, ent, err := g.NextWord(word, result)
+		next, ent, err := g.NextWord(word, result, *upperCase)
 		if err != nil {
 			log.Panic(err)
 		}

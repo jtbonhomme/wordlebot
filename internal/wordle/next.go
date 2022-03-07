@@ -10,13 +10,17 @@ import (
 
 // NextWord finds, given a game state (last proposed word and result)
 // the next best word to be played
-func (g *Game) NextWord(word, res string) (string, float64, error) {
+func (g *Game) NextWord(word, res string, upperCase bool) (string, float64, error) {
 	var result []int
 	if len(word) != 5 {
 		return "", 0.0, fmt.Errorf("word %s has not the right length", word)
 	}
 
-	word = strings.ToLower(word)
+	if upperCase {
+		word = strings.ToUpper(word)
+	} else {
+		word = strings.ToLower(word)
+	}
 
 	for _, c := range res {
 		i, err := strconv.Atoi(string(c))
@@ -30,7 +34,7 @@ func (g *Game) NextWord(word, res string) (string, float64, error) {
 		return "", 0.0, fmt.Errorf("result %v has not the right length", result)
 	}
 
-	g.Filter(word, result)
+	g.Filter(word, result, upperCase)
 	log.Debugf("\t%d filtered words are: %s", len(g.filteredWords), g.FilteredWords())
 	g.Commit()
 
@@ -40,7 +44,7 @@ func (g *Game) NextWord(word, res string) (string, float64, error) {
 		return "", 0.0, nil
 	}
 	for _, w := range g.words {
-		e, _, err := g.Entropy(w)
+		e, _, err := g.Entropy(w, upperCase)
 		if err != nil {
 			log.Panic(err)
 		}

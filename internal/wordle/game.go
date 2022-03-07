@@ -50,7 +50,7 @@ func (a ByEntropy) Less(i, j int) bool { return a[i].Entropy < a[j].Entropy }
 // from a word. It will check for every guess possibility and get the
 // information quantity from each guess (3^5) and return the average
 // information quantity.
-func (g *Game) Entropy(word string) (float64, []Stat, error) {
+func (g *Game) Entropy(word string, upperCase bool) (float64, []Stat, error) {
 	var stats []Stat
 
 	var entropy []float64
@@ -58,11 +58,16 @@ func (g *Game) Entropy(word string) (float64, []Stat, error) {
 	if word == "" {
 		return 0.0, stats, fmt.Errorf("word can not be empty")
 	}
-	word = strings.ToLower(word)
+
+	if upperCase {
+		word = strings.ToUpper(word)
+	} else {
+		word = strings.ToLower(word)
+	}
 
 	for i := 0; i < int(math.Pow(3, 5)); i++ {
 		result := IntToPowerOf3(i)
-		g.Filter(word, result)
+		g.Filter(word, result, upperCase)
 		var iqty float64
 		if len(g.filteredWords) != 0 {
 			iqty = -math.Log(float64(len(g.filteredWords))/float64(len(g.words))) / math.Log(3)

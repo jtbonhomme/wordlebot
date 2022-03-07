@@ -9,14 +9,19 @@ import (
 // which contains the following letters a, b or d
 // which do not contain the letter c
 // and do not have a letter e in last position
-func (g *Game) Filter(word string, result []int) {
+func (g *Game) Filter(word string, result []int, upperCase bool) {
 	g.filteredWords = g.words
 	g.discardedWords = []string{}
 
 	if len(word) != 5 || len(result) != 5 {
 		return
 	}
-	word = strings.ToLower(word)
+	if upperCase {
+		word = strings.ToUpper(word)
+	} else {
+		word = strings.ToLower(word)
+	}
+
 	for i, c := range word {
 		switch result[i] {
 		case Nothing:

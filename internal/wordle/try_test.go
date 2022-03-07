@@ -79,7 +79,7 @@ func TestTry(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got, err := wordle.Try(test.word, test.guess)
+		got, err := wordle.Try(test.word, test.guess, false)
 		if err != nil && test.expectedError == nil {
 			t.Errorf("unexpected error with word %s and guess %s: got %w (expected: nil)", test.word, test.guess, err)
 		}

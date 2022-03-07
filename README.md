@@ -157,6 +157,8 @@ ok      github.com/jtbonhomme/wordlebot/internal/wordle 0.327s
 
 ## To do
 
+* [ ] No Panic
+* [ ] Suggested word in play command, and stop if only 1 proposal or win result
 * [ ] Add tests
 * [ ] Speed up programs with concurency (especially for first and simulator)
 * [x] Naming
