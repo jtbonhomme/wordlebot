@@ -36,8 +36,14 @@ var (
 type Board struct {
 	currentWord string
 	result      string
+	resInt      []int
 	guessedWord string
 	wg          *wordle.Game
+	wc          int
+	wi          int
+	maxEntropy  float64
+	bestWord    string
+	loop        bool
 }
 
 // NewBoard generates a new Board with giving a size.
@@ -111,9 +117,7 @@ func (b *Board) Update(i *Input) error {
 				b.currentWord += Keyb[2][index]
 			}
 		} else if y > 430 && y < 504 && x > 238 && x < 315 { // enter
-			b.guessedWord = b.play()
-			b.result = ""
-			b.currentWord = ""
+			b.initPlay()
 		} else if y > 430 && y < 504 && x > 314 && x < 392 { // delete
 			if len(b.currentWord) > 0 {
 				b.currentWord = b.currentWord[:len(b.currentWord)-1]
@@ -121,52 +125,66 @@ func (b *Board) Update(i *Input) error {
 					b.result = b.result[:len(b.result)-1]
 				}
 			}
+		} else {
+			log.Printf("[DEBUG] Update() %#v (%d)", b, len(b.wg.Words()))
+		}
+	}
+	if b.loop && b.wi < b.wc {
+		b.play()
+		if b.bestWord != "" && b.wi == b.wc {
+			b.guessedWord = b.bestWord
+			b.result = ""
+			b.currentWord = ""
+			b.bestWord = ""
+			b.loop = false
+			b.wi = 0
+			b.wc = 0
+			b.maxEntropy = 0
 		}
 	}
 	return nil
 }
 
-// play looks for the next best word
-func (b *Board) play() string {
-	var result []int
-	if len(b.currentWord) != 5 || len(b.result) != 5 {
-		return ""
+// initPlay initialize a loop across words list
+func (b *Board) initPlay() {
+	//log.Printf("[START] initPlay() %#v (%d)", b, len(b.wg.Words()))
+	if len(b.currentWord) != 5 || len(b.result) != 5 || len(b.wg.Words()) == 0 {
+		log.Printf("wrong length of result or current word")
+		return
 	}
-
+	b.resInt = []int{}
 	for _, c := range b.result {
 		i, err := strconv.Atoi(string(c))
 		if err != nil {
-			return ""
+			return
 		}
-		result = append(result, i)
+		b.resInt = append(b.resInt, i)
 	}
 
-	b.wg.Filter(b.currentWord, result, true)
+	b.wg.Filter(b.currentWord, b.resInt, true)
 	b.wg.Commit()
 
-	var maxEntropy float64
-	var bestWord string
-	if len(b.wg.Words()) == 0 {
-		return ""
-	}
+	b.wi = 0
+	b.wc = len(b.wg.Words())
+	b.loop = true
+	//log.Printf("[END] initPlay() %#v (%d)", b, len(b.wg.Words()))
+}
 
-	for _, w := range b.wg.Words() {
-		b.SetGuessedWord(w)
+// play looks for the next best word
+func (b *Board) play() {
 
-		e, _, err := b.wg.Entropy(w, true)
-		if err != nil {
-			return ""
-		}
-		if e > maxEntropy {
-			maxEntropy = e
-			bestWord = w
-		}
-	}
+	w := b.wg.WordsByIndex(b.wi)
+	b.wi++
+	b.SetGuessedWord(w)
 
-	if len(b.wg.Words()) > 0 && bestWord == "" && maxEntropy == 0 {
-		return ""
+	e, _, err := b.wg.Entropy(w, true)
+	if err != nil {
+		return
 	}
-	return bestWord
+	if e > b.maxEntropy {
+		b.maxEntropy = e
+		b.bestWord = w
+	}
 }
 
 // Draw draws the board to the given boardImage.

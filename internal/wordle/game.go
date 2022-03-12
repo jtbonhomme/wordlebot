@@ -93,3 +93,11 @@ func (g *Game) Entropy(word string, upperCase bool) (float64, []Stat, error) {
 func (g *Game) Words() []string {
 	return g.words
 }
+
+// WordsByIndex return the word at index i from list
+func (g *Game) WordsByIndex(i int) string {
+	if i < 0 || i > len(g.words) {
+		return ""
+	}
+	return g.words[i]
+}
