@@ -20,3 +20,4 @@ assets/words.txt
 assets/*.stat
 bar.html
 results.html
+*.app

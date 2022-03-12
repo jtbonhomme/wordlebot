@@ -163,3 +163,13 @@ ok      github.com/jtbonhomme/wordlebot/internal/wordle 0.327s
 * [ ] Speed up programs with concurency (especially for first and simulator)
 * [x] Naming
 * [x] Improve charts
+
+## Deploy on IOS
+
+[See go mobile page](https://github.com/golang/go/wiki/Mobile#building-and-deploying-to-ios-1)
+
+```
+go run [github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile](http://github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile) bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
+
+ios-deploy -b /Users/jbonhomm/Library/Developer/Xcode/DerivedData/wordlebot-faoxenhkmuqumwczrurceohpvchw/Build/Products/Debug-iphoneos/wordlebot.app
+```
