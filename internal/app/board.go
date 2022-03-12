@@ -1,18 +1,20 @@
 package app
 
 import (
+	_ "embed"
 	"fmt"
 	"image/color"
 	"log"
 	"math"
-	"strings"
+	"strconv"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/jtbonhomme/wordlebot/internal/fonts"
+	"github.com/jtbonhomme/wordlebot/internal/wordle"
+	"github.com/jtbonhomme/wordlebot/internal/words"
 )
 
 const (
@@ -33,7 +35,9 @@ var (
 // Board represents the game board.
 type Board struct {
 	currentWord string
+	result      string
 	guessedWord string
+	wg          *wordle.Game
 }
 
 // NewBoard generates a new Board with giving a size.
@@ -69,6 +73,7 @@ func NewBoard() (*Board, error) {
 	}
 
 	b := &Board{}
+	b.wg = wordle.New(words.Words)
 	return b, nil
 }
 
@@ -77,6 +82,7 @@ var Keyb = [][]string{
 	{"K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"},
 	{"U", "V", "W", "X", "Y", "Z"},
 }
+var Res = []string{"0", "1", "2"}
 
 // Update updates the board state.
 func (b *Board) Update(i *Input) error {
@@ -87,133 +93,80 @@ func (b *Board) Update(i *Input) error {
 		if index < 0 || index > 9 {
 			return fmt.Errorf("index error %d", index)
 		}
-		if y > 286 && y < 356 {
-			if len(b.currentWord) < 5 {
+		if y > 206 && y < 281 && x > 146 && x < 260 { // result choice
+			if len(b.result) < 5 /*&& len(b.currentWord) > len(b.result)*/ {
+				index2 := int(math.Ceil(float64(x-146)/40.0)) - 1
+				b.result += Res[index2]
+			}
+		} else if y > 209 && y < 356 { // first letters row
+			if len(b.currentWord) < 5 /*&& len(b.currentWord) == len(b.result) */ {
 				b.currentWord += Keyb[0][index]
 			}
-		} else if y > 355 && y < 431 {
-			if len(b.currentWord) < 5 {
+		} else if y > 355 && y < 431 { // second letters row
+			if len(b.currentWord) < 5 /*&& len(b.currentWord) == len(b.result)*/ {
 				b.currentWord += Keyb[1][index]
 			}
-		} else if y > 430 && y < 504 && x < 239 {
-			if len(b.currentWord) < 5 {
+		} else if y > 430 && y < 504 && x < 239 { // third letters row
+			if len(b.currentWord) < 5 /*&& len(b.currentWord) == len(b.result)*/ {
 				b.currentWord += Keyb[2][index]
 			}
-		} else if y > 430 && y < 504 && x > 238 && x < 315 {
-			log.Printf("Press Enter")
-		} else if y > 430 && y < 504 && x > 314 && x < 392 {
+		} else if y > 430 && y < 504 && x > 238 && x < 315 { // enter
+			b.guessedWord = b.play()
+			b.result = ""
+			b.currentWord = ""
+		} else if y > 430 && y < 504 && x > 314 && x < 392 { // delete
 			if len(b.currentWord) > 0 {
 				b.currentWord = b.currentWord[:len(b.currentWord)-1]
+				if len(b.result) > len(b.currentWord) {
+					b.result = b.result[:len(b.result)-1]
+				}
 			}
 		}
-
 	}
 	return nil
 }
 
-func drawText(boardImage *ebiten.Image, f font.Face, x, y int, str string) {
-	bound, _ := font.BoundString(f, str)
-	h := (bound.Max.Y - bound.Min.Y).Ceil()
-	y += h
-	text.Draw(boardImage, str, f, x, y, textColor)
-}
+// play looks for the next best word
+func (b *Board) play() string {
+	var result []int
+	if len(b.currentWord) != 5 || len(b.result) != 5 {
+		return ""
+	}
 
-func drawKeyboard(boardImage *ebiten.Image) {
-	f := normalFont
-	var x, y int
-	A := "A"
-	for i := 0; i < 26; i++ {
-		if i%10 == 0 {
-			x = 0
-			y++
+	for _, c := range b.result {
+		i, err := strconv.Atoi(string(c))
+		if err != nil {
+			return ""
 		}
-		str := string(byte(A[0]) + byte(i))
-		bound, _ := font.BoundString(f, str)
-		w := (bound.Max.X - bound.Min.X).Ceil()
-		h := (bound.Max.Y - bound.Min.Y).Ceil()
-		lx := x*38 + (tileHeight-w)/2 - 2
-		ly := 280 + (y-1)*76 + (tileWidth-h)/2 + h
-
-		drawText(boardImage, f, lx, ly, str)
-		x++
+		result = append(result, i)
 	}
-}
 
-func draw123(boardImage *ebiten.Image) {
-	f := normalFont
-	var x, y int
-	A := "1"
-	for i := 0; i < 3; i++ {
-		str := string(byte(A[0]) + byte(i))
-		bound, _ := font.BoundString(f, str)
-		w := (bound.Max.X - bound.Min.X).Ceil()
-		h := (bound.Max.Y - bound.Min.Y).Ceil()
-		lx := 135 + x*38 + (tileHeight-w)/2 - 2
-		ly := 280 + (y-1)*76 + (tileWidth-h)/2 + h
+	b.wg.Filter(b.currentWord, result, true)
+	b.wg.Commit()
 
-		drawText(boardImage, f, lx, ly, str)
-		x++
+	var maxEntropy float64
+	var bestWord string
+	if len(b.wg.Words()) == 0 {
+		return ""
 	}
-}
 
-func drawEnter(boardImage *ebiten.Image) {
-	f := normalFont
-	str := "Enter"
-	bound, _ := font.BoundString(f, str)
-	w := (bound.Max.X - bound.Min.X).Ceil()
-	h := (bound.Max.Y - bound.Min.Y).Ceil()
-	lx := 245 + (tileHeight-w)/2
-	ly := 436 + (2*tileWidth-h)/2
+	for _, w := range b.wg.Words() {
+		b.SetGuessedWord(w)
 
-	drawText(boardImage, f, lx, ly, str)
-}
-
-func drawDel(boardImage *ebiten.Image) {
-	f := normalFont
-	str := "Del"
-	bound, _ := font.BoundString(f, str)
-	w := (bound.Max.X - bound.Min.X).Ceil()
-	h := (bound.Max.Y - bound.Min.Y).Ceil()
-	lx := 318 + (tileHeight-w)/2
-	ly := 436 + (2*tileWidth-h)/2
-
-	drawText(boardImage, f, lx, ly, str)
-}
-
-func drawCurrentWord(boardImage *ebiten.Image, word string) {
-	f := bigFont
-	if len(word) > 5 {
-		return
+		e, _, err := b.wg.Entropy(w, true)
+		if err != nil {
+			return ""
+		}
+		if e > maxEntropy {
+			maxEntropy = e
+			bestWord = w
+		}
 	}
-	word = strings.ToUpper(word)
-	for i := 0; i < len(word); i++ {
-		str := string(word[i])
-		bound, _ := font.BoundString(f, str)
-		w := (bound.Max.X - bound.Min.X).Ceil()
-		h := (bound.Max.Y - bound.Min.Y).Ceil()
-		lx := 66 + i*50 + (bigTileHeight-w)/2
-		ly := 100 + (2*bigTileWidth-h)/2
 
-		drawText(boardImage, f, lx, ly, str)
+	if len(b.wg.Words()) > 0 && bestWord == "" && maxEntropy == 0 {
+		return ""
 	}
-}
-
-func drawGuessedWord(boardImage *ebiten.Image, word string) {
-	f := normalFont
-	if len(word) > 5 {
-		return
-	}
-	word = strings.ToUpper(word)
-	for i := 0; i < len(word); i++ {
-		str := string(word[i])
-		bound, _ := font.BoundString(f, str)
-		w := (bound.Max.X - bound.Min.X).Ceil()
-		h := (bound.Max.Y - bound.Min.Y).Ceil()
-		lx := 66 + i*w + (bigTileHeight-w)/2
-		ly := 500 + (2*bigTileWidth-h)/2
-
-		drawText(boardImage, f, lx, ly, str)
-	}
+	return bestWord
 }
 
 // Draw draws the board to the given boardImage.
@@ -224,6 +177,7 @@ func (b *Board) Draw(boardImage *ebiten.Image) {
 	drawEnter(boardImage)
 	drawDel(boardImage)
 	drawCurrentWord(boardImage, b.currentWord)
+	drawResult(boardImage, b.result)
 	drawGuessedWord(boardImage, b.guessedWord)
 }
 

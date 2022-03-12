@@ -88,3 +88,8 @@ func (g *Game) Entropy(word string, upperCase bool) (float64, []Stat, error) {
 	sort.Sort(ByEntropy(stats))
 	return meanEntropy, stats, nil
 }
+
+// Words return the current word list
+func (g *Game) Words() []string {
+	return g.words
+}

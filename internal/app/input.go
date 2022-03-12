@@ -135,7 +135,7 @@ func (i *Input) Draw(boardImage *ebiten.Image) {
 	f := normalFont
 	str := i.ToString()
 	lx := 40
-	ly := 600
+	ly := 650
 
 	drawText(boardImage, f, lx, ly, str)
 
