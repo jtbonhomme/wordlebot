@@ -1,14 +1,22 @@
 package app
 
 import (
+	"bytes"
+	"image"
+	"image/color"
+	_ "image/png"
+	"log"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/jtbonhomme/wordlebot/internal/keyboard"
 )
 
 const (
-	ScreenWidth  = 420
-	ScreenHeight = 600
-	boardSize    = 4
+	ScreenWidth  = 400
+	ScreenHeight = 720
 )
+
+var backgroundColor = color.RGBA{0xfa, 0xf8, 0xef, 0xff}
 
 // Game represents a game state.
 type Game struct {
@@ -23,10 +31,17 @@ func NewGame() (*Game, error) {
 		input: NewInput(),
 	}
 	var err error
-	g.board, err = NewBoard(boardSize)
+	g.board, err = NewBoard()
 	if err != nil {
 		return nil, err
 	}
+	img, _, err := image.Decode(bytes.NewReader(keyboard.Keyboard_png))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	g.boardImage = ebiten.NewImageFromImage(img)
+
 	return g, nil
 }
 
@@ -47,8 +62,7 @@ func (g *Game) Update() error {
 // Draw draws the current game to the given screen.
 func (g *Game) Draw(screen *ebiten.Image) {
 	if g.boardImage == nil {
-		w, h := g.board.Size()
-		g.boardImage = ebiten.NewImage(w, h)
+		g.boardImage = ebiten.NewImage(ScreenWidth, ScreenHeight)
 	}
 	screen.Fill(backgroundColor)
 	g.board.Draw(g.boardImage)
