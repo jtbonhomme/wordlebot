@@ -3,6 +3,7 @@ package app
 import (
 	"image/color"
 	"log"
+	"strings"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
@@ -13,9 +14,11 @@ import (
 )
 
 const (
-	tileHeight int = 70
-	tileWidth  int = 30
-	dpi            = 72
+	tileHeight    int = 70
+	tileWidth     int = 30
+	bigTileHeight int = 90
+	bigTileWidth  int = 50
+	dpi               = 72
 )
 
 var (
@@ -27,6 +30,8 @@ var (
 
 // Board represents the game board.
 type Board struct {
+	currentWord string
+	guessedWord string
 }
 
 // NewBoard generates a new Board with giving a size.
@@ -45,7 +50,7 @@ func NewBoard() (*Board, error) {
 		log.Fatal(err)
 	}
 	normalFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    20,
+		Size:    24,
 		DPI:     dpi,
 		Hinting: font.HintingFull,
 	})
@@ -53,7 +58,7 @@ func NewBoard() (*Board, error) {
 		log.Fatal(err)
 	}
 	bigFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    30,
+		Size:    36,
 		DPI:     dpi,
 		Hinting: font.HintingFull,
 	})
@@ -85,9 +90,6 @@ func drawKeyboard(boardImage *ebiten.Image) {
 		if i%10 == 0 {
 			x = 0
 			y++
-			if y == 3 {
-				x += 2
-			}
 		}
 		str := string(byte(A[0]) + byte(i))
 		bound, _ := font.BoundString(f, str)
@@ -124,7 +126,7 @@ func drawEnter(boardImage *ebiten.Image) {
 	bound, _ := font.BoundString(f, str)
 	w := (bound.Max.X - bound.Min.X).Ceil()
 	h := (bound.Max.Y - bound.Min.Y).Ceil()
-	lx := 16 + (tileHeight-w)/2
+	lx := 245 + (tileHeight-w)/2
 	ly := 436 + (2*tileWidth-h)/2
 
 	drawText(boardImage, f, lx, ly, str)
@@ -142,6 +144,42 @@ func drawDel(boardImage *ebiten.Image) {
 	drawText(boardImage, f, lx, ly, str)
 }
 
+func drawCurrentWord(boardImage *ebiten.Image, word string) {
+	f := bigFont
+	if len(word) > 5 {
+		return
+	}
+	word = strings.ToUpper(word)
+	for i := 0; i < len(word); i++ {
+		str := string(word[i])
+		bound, _ := font.BoundString(f, str)
+		w := (bound.Max.X - bound.Min.X).Ceil()
+		h := (bound.Max.Y - bound.Min.Y).Ceil()
+		lx := 66 + i*50 + (bigTileHeight-w)/2
+		ly := 100 + (2*bigTileWidth-h)/2
+
+		drawText(boardImage, f, lx, ly, str)
+	}
+}
+
+func drawGuessedWord(boardImage *ebiten.Image, word string) {
+	f := normalFont
+	if len(word) > 5 {
+		return
+	}
+	word = strings.ToUpper(word)
+	for i := 0; i < len(word); i++ {
+		str := string(word[i])
+		bound, _ := font.BoundString(f, str)
+		w := (bound.Max.X - bound.Min.X).Ceil()
+		h := (bound.Max.Y - bound.Min.Y).Ceil()
+		lx := 66 + i*w + (bigTileHeight-w)/2
+		ly := 500 + (2*bigTileWidth-h)/2
+
+		drawText(boardImage, f, lx, ly, str)
+	}
+}
+
 // Draw draws the board to the given boardImage.
 func (b *Board) Draw(boardImage *ebiten.Image) {
 	// Draw keyboard
@@ -149,4 +187,11 @@ func (b *Board) Draw(boardImage *ebiten.Image) {
 	draw123(boardImage)
 	drawEnter(boardImage)
 	drawDel(boardImage)
+	drawCurrentWord(boardImage, b.currentWord)
+	drawGuessedWord(boardImage, b.guessedWord)
+}
+
+// SetGuessedWord set guessed word
+func (b *Board) SetGuessedWord(w string) {
+	b.guessedWord = w
 }

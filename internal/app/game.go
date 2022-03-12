@@ -56,6 +56,7 @@ func (g *Game) Update() error {
 	if err := g.board.Update(g.input); err != nil {
 		return err
 	}
+	g.board.SetGuessedWord("TRIS")
 	return nil
 }
 
