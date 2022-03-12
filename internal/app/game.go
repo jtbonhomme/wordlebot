@@ -16,7 +16,7 @@ const (
 	ScreenHeight = 720
 )
 
-var backgroundColor = color.RGBA{0xfa, 0xf8, 0xef, 0xff}
+var backgroundColor = color.RGBA{0x0a, 0x08, 0x0f, 0xff}
 
 // Game represents a game state.
 type Game struct {
