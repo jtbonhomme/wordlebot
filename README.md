@@ -168,8 +168,11 @@ ok      github.com/jtbonhomme/wordlebot/internal/wordle 0.327s
 
 [See go mobile page](https://github.com/golang/go/wiki/Mobile#building-and-deploying-to-ios-1)
 
-```
-go run [github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile](http://github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile) bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
 
+Execute this command to build the framework:
+```
+go run github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
+open mobile/ios/wordlebot.xcodeproj # opens the project in XCode, then build it from XCode.
+# Then connect your iPhone to your laptop and run:
 ios-deploy -b /Users/jbonhomm/Library/Developer/Xcode/DerivedData/wordlebot-faoxenhkmuqumwczrurceohpvchw/Build/Products/Debug-iphoneos/wordlebot.app
 ```

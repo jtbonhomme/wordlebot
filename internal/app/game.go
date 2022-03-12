@@ -57,7 +57,6 @@ func (g *Game) Update() error {
 	if err := g.board.Update(g.input); err != nil {
 		return err
 	}
-	g.board.SetGuessedWord("TRIS")
 	return nil
 }
 
@@ -66,7 +65,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	if g.boardImage == nil {
 		g.boardImage = ebiten.NewImage(ScreenWidth, ScreenHeight)
 	}
-	//screen.Fill(backgroundColor)
 	g.boardImage = ebiten.NewImageFromImage(g.bgImage)
 
 	g.input.Draw(g.boardImage)

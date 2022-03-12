@@ -19,6 +19,7 @@
 		8CB110C1230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB110C0230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m */; };
 		8CCAFF0B22E3133E00FAEDC1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CCAFF0A22E3133E00FAEDC1 /* AVFoundation.framework */; };
 		98D185CC27DBD231003F73D7 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98D185CB27DBD231003F73D7 /* Mobile.framework */; };
+		98D185CE27DCD928003F73D7 /* wordlebot-splash-579x1030.png in Resources */ = {isa = PBXBuildFile; fileRef = 98D185CD27DCD927003F73D7 /* wordlebot-splash-579x1030.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		8CB110C22309728C0064D8CE /* MobileEbitenViewControllerWithErrorHandling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MobileEbitenViewControllerWithErrorHandling.h; sourceTree = "<group>"; };
 		8CCAFF0A22E3133E00FAEDC1 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		98D185CB27DBD231003F73D7 /* Mobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mobile.framework; sourceTree = "<group>"; };
+		98D185CD27DCD927003F73D7 /* wordlebot-splash-579x1030.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wordlebot-splash-579x1030.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 		8C7185B01D11C56C00F98056 = {
 			isa = PBXGroup;
 			children = (
+				98D185CD27DCD927003F73D7 /* wordlebot-splash-579x1030.png */,
 				8C7185BB1D11C56C00F98056 /* wordlebot */,
 				8C7185BA1D11C56C00F98056 /* Products */,
 				8CCAFF0922E3133E00FAEDC1 /* Frameworks */,
@@ -174,6 +177,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98D185CE27DCD928003F73D7 /* wordlebot-splash-579x1030.png in Resources */,
 				8C050D3F1D16B7E500F865C4 /* LaunchScreen.storyboard in Resources */,
 				8C7185C91D11C56C00F98056 /* Assets.xcassets in Resources */,
 				8C7185C71D11C56C00F98056 /* Main.storyboard in Resources */,

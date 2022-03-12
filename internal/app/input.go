@@ -44,6 +44,9 @@ type Input struct {
 	touchID          ebiten.TouchID
 	touchCurrentPosX int
 	touchCurrentPosY int
+
+	lastPosX int
+	lastPosY int
 }
 
 // NewInput generates a new Input object.
@@ -56,6 +59,11 @@ func (i *Input) ToString() string {
 	return fmt.Sprintf("mouse state: %d (%d, %d)\ntouch state: %d (%d, %d)", i.mouseState, i.mouseCurrentPosX, i.mouseCurrentPosY, i.touchState, i.touchCurrentPosX, i.touchCurrentPosY)
 }
 
+// LastPos return last position
+func (i *Input) LastPos() (int, int) {
+	return i.lastPosX, i.lastPosY
+}
+
 // Update updates the current input states.
 func (i *Input) Update() {
 	switch i.mouseState {
@@ -64,6 +72,8 @@ func (i *Input) Update() {
 			x, y := ebiten.CursorPosition()
 			i.mouseCurrentPosX = x
 			i.mouseCurrentPosY = y
+			i.lastPosX = x
+			i.lastPosY = y
 			i.mouseState = mouseStatePressing
 		}
 	case mouseStatePressing:
@@ -82,6 +92,8 @@ func (i *Input) Update() {
 			x, y := ebiten.TouchPosition(i.touches[0])
 			i.touchCurrentPosX = x
 			i.touchCurrentPosY = y
+			i.lastPosX = x
+			i.lastPosY = y
 			i.touchState = touchStatePressing
 		}
 	case touchStatePressing:
@@ -108,6 +120,14 @@ func (i *Input) Update() {
 			i.touchState = touchStateNone
 		}
 	}
+}
+
+// IsSettled return true if touchState or mouseState is settled
+func (i *Input) IsSettled() bool {
+	if i.mouseState == mouseStateSettled || i.touchState == touchStateSettled {
+		return true
+	}
+	return false
 }
 
 // Draw draws the input to the given boardImage.

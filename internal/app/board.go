@@ -1,8 +1,10 @@
 package app
 
 import (
+	"fmt"
 	"image/color"
 	"log"
+	"math"
 	"strings"
 
 	"golang.org/x/image/font"
@@ -70,9 +72,42 @@ func NewBoard() (*Board, error) {
 	return b, nil
 }
 
+var Keyb = [][]string{
+	{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"},
+	{"K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"},
+	{"U", "V", "W", "X", "Y", "Z"},
+}
+
 // Update updates the board state.
-func (b *Board) Update(input *Input) error {
-	//log.Printf("%s", input.ToString())
+func (b *Board) Update(i *Input) error {
+	if i.IsSettled() {
+		// get key pressed
+		x, y := i.LastPos()
+		index := int(math.Ceil(float64(x)/40.0)) - 1
+		if index < 0 || index > 9 {
+			return fmt.Errorf("index error %d", index)
+		}
+		if y > 286 && y < 356 {
+			if len(b.currentWord) < 5 {
+				b.currentWord += Keyb[0][index]
+			}
+		} else if y > 355 && y < 431 {
+			if len(b.currentWord) < 5 {
+				b.currentWord += Keyb[1][index]
+			}
+		} else if y > 430 && y < 504 && x < 239 {
+			if len(b.currentWord) < 5 {
+				b.currentWord += Keyb[2][index]
+			}
+		} else if y > 430 && y < 504 && x > 238 && x < 315 {
+			log.Printf("Press Enter")
+		} else if y > 430 && y < 504 && x > 314 && x < 392 {
+			if len(b.currentWord) > 0 {
+				b.currentWord = b.currentWord[:len(b.currentWord)-1]
+			}
+		}
+
+	}
 	return nil
 }
 
