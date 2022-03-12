@@ -23,6 +23,7 @@ type Game struct {
 	input      *Input
 	board      *Board
 	boardImage *ebiten.Image
+	bgImage    image.Image
 }
 
 // NewGame generates a new Game object.
@@ -39,7 +40,7 @@ func NewGame() (*Game, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	g.bgImage = img
 	g.boardImage = ebiten.NewImageFromImage(img)
 
 	return g, nil
@@ -65,7 +66,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	if g.boardImage == nil {
 		g.boardImage = ebiten.NewImage(ScreenWidth, ScreenHeight)
 	}
-	screen.Fill(backgroundColor)
+	//screen.Fill(backgroundColor)
+	g.boardImage = ebiten.NewImageFromImage(g.bgImage)
+
+	g.input.Draw(g.boardImage)
 	g.board.Draw(g.boardImage)
 	op := &ebiten.DrawImageOptions{}
 	sw, sh := screen.Size()

@@ -1,7 +1,7 @@
 package app
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -51,6 +51,11 @@ func NewInput() *Input {
 	return &Input{}
 }
 
+// ToString displays input object as a String
+func (i *Input) ToString() string {
+	return fmt.Sprintf("mouse state: %d (%d, %d)\ntouch state: %d (%d, %d)", i.mouseState, i.mouseCurrentPosX, i.mouseCurrentPosY, i.touchState, i.touchCurrentPosX, i.touchCurrentPosY)
+}
+
 // Update updates the current input states.
 func (i *Input) Update() {
 	switch i.mouseState {
@@ -63,8 +68,6 @@ func (i *Input) Update() {
 		}
 	case mouseStatePressing:
 		if !ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-			x, y := ebiten.CursorPosition()
-			log.Printf("x, y: %d, %d", x, y)
 			i.mouseState = mouseStateSettled
 		}
 	case mouseStateSettled:
@@ -105,4 +108,15 @@ func (i *Input) Update() {
 			i.touchState = touchStateNone
 		}
 	}
+}
+
+// Draw draws the input to the given boardImage.
+func (i *Input) Draw(boardImage *ebiten.Image) {
+	f := normalFont
+	str := i.ToString()
+	lx := 40
+	ly := 600
+
+	drawText(boardImage, f, lx, ly, str)
+
 }

@@ -36,7 +36,7 @@ type Board struct {
 
 // NewBoard generates a new Board with giving a size.
 func NewBoard() (*Board, error) {
-	tt, err := opentype.Parse(fonts.OutfitRegular_ttf)
+	tt, err := opentype.Parse(fonts.CircularMedium_ttf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,6 +72,7 @@ func NewBoard() (*Board, error) {
 
 // Update updates the board state.
 func (b *Board) Update(input *Input) error {
+	//log.Printf("%s", input.ToString())
 	return nil
 }
 
