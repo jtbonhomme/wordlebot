@@ -1,0 +1,24 @@
+<html>  
+    <head>
+        <meta charset="utf-8"/>
+        <link href="https://wordle.louan.me//css/app.2d9dae09.css" rel="stylesheet">
+        <script src="wasm_exec.js"></script>
+        <script>
+            const go = new Go();
+            WebAssembly.instantiateStreaming(fetch("wordlebot.wasm"), go.importObject).then((result) => {
+                go.run(result.instance);
+            });
+
+        </script>
+    </head>
+    <body>
+        <div id="app">
+        <iframe id="inlineFrameExample"
+            title="Inline Frame Example"
+            width="720"
+            height="720"
+            src="https://wordle.louan.me/">
+        </iframe>
+    </div>
+    </body>
+</html>  

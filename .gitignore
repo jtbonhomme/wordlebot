@@ -21,3 +21,5 @@ assets/*.stat
 bar.html
 results.html
 *.app
+web/wasm_exec.js
+web/wordlebot.wasm

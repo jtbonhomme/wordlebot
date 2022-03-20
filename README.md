@@ -148,12 +148,38 @@ go test ./...
 ok      github.com/jtbonhomme/wordlebot/internal/wordle 0.327s
 ```
 
+## Deploy on IOS
+
+[See go mobile page](https://github.com/golang/go/wiki/Mobile#building-and-deploying-to-ios-1)
+
+Execute these commands to build the framework:
+```
+go run github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
+open mobile/ios/wordlebot.xcodeproj # opens the project in XCode, then build it from XCode.
+# Then connect your iPhone to your laptop and run:
+ios-deploy -b /Users/jbonhomm/Library/Developer/Xcode/DerivedData/wordlebot-faoxenhkmuqumwczrurceohpvchw/Build/Products/Debug-iphoneos/wordlebot.app
+```
+
+Note: install `ios-deploy` with `brew install ios-deploy`
+
+## Webassembly
+
+```
+cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" web
+GOOS=js GOARCH=wasm go build -o web/wordlebot.wasm cmd/wasm/main.go
+go run cmd/server/main.go web
+```
+
+Then open http://localhost:8080 in your browser.
+
 ## References
 
 * http://www.lexique.org/
 * https://scienceetonnante.com/2022/02/13/comment-craquer-le-jeu-wordle-sutom/
 * https://www.youtube.com/watch?v=iw4_7ioHWF4&t=569s
 * https://www.youtube.com/watch?v=fRed0Xmc2Wg
+* https://github.com/golang/go/wiki/WebAssembly#getting-started
+* https://github.com/golang/go/wiki/Mobile#building-and-deploying-to-ios-1
 
 ## To do
 
@@ -163,16 +189,3 @@ ok      github.com/jtbonhomme/wordlebot/internal/wordle 0.327s
 * [ ] Speed up programs with concurency (especially for first and simulator)
 * [x] Naming
 * [x] Improve charts
-
-## Deploy on IOS
-
-[See go mobile page](https://github.com/golang/go/wiki/Mobile#building-and-deploying-to-ios-1)
-
-
-Execute this command to build the framework:
-```
-go run github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
-open mobile/ios/wordlebot.xcodeproj # opens the project in XCode, then build it from XCode.
-# Then connect your iPhone to your laptop and run:
-ios-deploy -b /Users/jbonhomm/Library/Developer/Xcode/DerivedData/wordlebot-faoxenhkmuqumwczrurceohpvchw/Build/Products/Debug-iphoneos/wordlebot.app
-```
