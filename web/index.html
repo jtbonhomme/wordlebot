@@ -1,24 +1,30 @@
 <html>  
     <head>
         <meta charset="utf-8"/>
-        <link href="https://wordle.louan.me//css/app.2d9dae09.css" rel="stylesheet">
-        <script src="wasm_exec.js"></script>
+        <script src="js/wasm_exec.js"></script>
+        <script src="js/wordlebot.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
         <script>
+            console.log("loading go ...")
             const go = new Go();
             WebAssembly.instantiateStreaming(fetch("wordlebot.wasm"), go.importObject).then((result) => {
                 go.run(result.instance);
             });
 
+            window.addEventListener('load', init) 
+
         </script>
+        <link href="/main.css" rel="stylesheet">
     </head>
     <body>
-        <div id="app">
-        <iframe id="inlineFrameExample"
-            title="Inline Frame Example"
+        <iframe id="inlineFrame"
+            title="Inline Frame Wordle"
             width="720"
             height="720"
-            src="https://wordle.louan.me/">
+            align="middle"
+            src="/wordle.html">
         </iframe>
-    </div>
+        <div id="log" class="log">
+        </div>
     </body>
 </html>  
